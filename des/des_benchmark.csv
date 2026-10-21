@@ -1,0 +1,2 @@
+message_bytes,iterations,encryption_median_ms,decryption_median_ms,round_trip_peak_python_bytes,time_complexity,space_complexity
+22,100,0.61645,0.61635,1405,"O(n), n = input bytes; fixed 16 rounds per block","O(n), message and result buffers"
