@@ -1,35 +1,53 @@
-# DES project
+This project implements a rotor machine, DES, and a hybrid system combining both. It requires Python 3.10 or later and uses only the Python standard library. No additional packages need to be installed.
 
-The DES code is in `des.py`. It runs on Python 3.10 or later and uses only
-standard Python libraries. 
+Open a terminal in the project root directory, which contains hybrid.py and the des and rotor_machine folders. Run all commands below from that directory. Use python instead of python3 if that is the command available on your system.
 
-Run the three project messages (`HELLO`, `HOPE`, and `NEW YEAR`):
+To run the rotor code from the project root directory:
 
-```console
-python des.py
-python des.py demo --csv task2_results.csv
-```
+python3 rotor_machine/rotor_machine.py
 
-Encrypt or decrypt another message:
+If your terminal is already inside the rotor_machine folder, run:
 
-```console
-python des.py encrypt "HELLO" --key 133457799BBCDFF1
-python des.py decrypt "PASTE_THE_HEX_OUTPUT_HERE" --key 133457799BBCDFF1
-```
+python3 rotor_machine.py
 
-The code uses DES-CBC and PKCS#7 padding. The first 16 hex digits of the output
-hold the eight-byte IV; the rest is ciphertext. Each encryption uses a new
-random IV, so the encrypted output normally changes between runs. Keep the
-whole output for decryption. The key above is a public example for the project.
+After running it from that folder, use cd .. to return to the project root before running the remaining commands in this README.
 
-Run the checks or measure performance:
+This encrypts and decrypts HOPE, HELLO, and NEW YEAR and displays the original, encrypted, and decrypted messages. The machine starts at rotor positions (0, 0, 0), uses carry stepping, and converts text to uppercase.
 
-```console
-python -m unittest test_des -v
-python des.py benchmark --csv des_benchmark.csv
-```
+To run DES:
 
+python3 des/des.py
 
-Algorithm and test references: [FIPS 46-3](https://csrc.nist.gov/files/pubs/fips/46-3/final/docs/fips46-3.pdf),
-[FIPS 81, Tables B1 and C1](https://csrc.nist.gov/files/pubs/fips/81/final/docs/fips81.pdf),
-and [NIST SP 800-17, Appendix B, Table 1](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-17.pdf).
+This encrypts and decrypts HELLO, HOPE, and NEW YEAR using DES-CBC with PKCS#7 padding and displays whether each recovered message matches the original.
+
+To encrypt a different message with DES:
+
+python3 des/des.py encrypt "HELLO" --key 133457799BBCDFF1
+
+To decrypt it, replace PASTE_THE_HEX_OUTPUT_HERE with the complete encrypted output and use the same key:
+
+python3 des/des.py decrypt "PASTE_THE_HEX_OUTPUT_HERE" --key 133457799BBCDFF1
+
+The example key is provided for the project demonstration. The encrypted output includes an eight-byte IV followed by ciphertext. A fresh random IV makes the encrypted output change between runs.
+
+To run the standalone DES benchmark:
+
+python3 des/des.py benchmark --message "WELCOME TO PUERTO RICO" --iterations 100
+
+This prints median encryption and decryption times, peak Python memory allocation, and computational complexity.
+
+To run the hybrid system and compare all three algorithms:
+
+python3 hybrid.py
+
+The hybrid script imports the existing rotor and DES implementations. It encrypts each message with the rotor machine and then DES, and decrypts in reverse order. It runs HOW ARE YOU, HAPPY NEW YEAR, and WELCOME TO PUERTO RICO.
+
+For each message, M is the original text, E1 is the rotor ciphertext, E2 is the DES-encrypted result in hexadecimal, D1 is the DES-decrypted rotor ciphertext, and D2 is the recovered original text. Successful results show D1 equal to E1, D2 equal to M, and Matches: True.
+
+The script then benchmarks the rotor machine, DES, and hybrid system on those messages and on 64-, 256-, 1024-, and 4096-byte inputs. Each case uses 100 iterations. It prints median encryption, decryption, and round-trip times, total time for all timed round trips, and peak Python memory allocation. Times are in milliseconds and memory is in bytes.
+
+Benchmarks use a fixed IV to exclude random-IV generation. Memory is measured separately from timing and represents Python allocations, rather than total process memory. Results appear only in the terminal; these commands do not create CSV files.
+
+To run the DES tests:
+
+python3 -m unittest discover -s des -p test_des.py -v
