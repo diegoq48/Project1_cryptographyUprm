@@ -1,5 +1,6 @@
-# Checks the DES examples, padding, and project messages.
-# ai gen tests
+#this file is ment to be a catch all for test for des 
+#do not take passing these test as a sign of cryptographic security 
+#these are bare minimum standardized test 
 import csv
 import io
 from contextlib import redirect_stdout
@@ -14,8 +15,6 @@ from des import pad, unpad
 
 KEY = bytes.fromhex("133457799BBCDFF1")
 IV = bytes.fromhex("1234567890ABCDEF")
-
-## Generated Tests.
 
 class BlockCipherTests(unittest.TestCase):
     # Check a DES example with a known ciphertext.
